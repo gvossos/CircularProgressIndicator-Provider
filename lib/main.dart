@@ -28,8 +28,8 @@ class StartPage extends StatelessWidget {
         appBar: AppBar(),
         body: Column(
           children: <Widget>[
-            ParentWd(),
-            ChildWd(),
+            ParentWd(),//parent
+            ChildWd(),//child
           ],
         ));
   }
@@ -40,19 +40,17 @@ class ParentWd extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: <Widget>[
       OutlineButton(
-        //   padding: EdgeInsets.all(1),
         child: Text('Parent 1'),
         shape: StadiumBorder(),
         onPressed: () async {
-          await Provider.of<Child>(context, listen: false).getData(1);
+          await Provider.of<Child>(context, listen: false).getData(1);//load child data
         },
       ),
       OutlineButton(
-        //  padding: EdgeInsets.all(1),
         child: Text('Parent 2'),
         shape: StadiumBorder(),
         onPressed: () async {
-          await Provider.of<Child>(context, listen: false).getData(2);
+          await Provider.of<Child>(context, listen: false).getData(2);/load child data
         },
       ),
     ]);
@@ -62,23 +60,20 @@ class ParentWd extends StatelessWidget {
 class ChildWd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print('child rebuild');
     return FutureBuilder(
       future: Provider.of<Child>(context, listen: false).getData(1),
       builder: (ctx, prevData) {
         if (prevData.connectionState == ConnectionState.waiting) {
-           print('FutureBuilder ConnectionState.waiting');
           return Column(
             children: <Widget>[
               SizedBox(
                 height: 150,
               ),
-              Center(child: CircularProgressIndicator()),
+              Center(child: CircularProgressIndicator()),//data is shown but not the CircularProgressIndicator
             ],
           );
         } else {
           if (prevData.error == null) {
-            print('FutureBuilder prevData.error == null');
             return Consumer<Child>(
               builder: (ctx, data, child) => GridView(
                 padding: EdgeInsets.all(2),
@@ -118,7 +113,7 @@ class Child with ChangeNotifier {
   }
 
   Future<void> getData(int idP) async {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {//simulate server get data with delay
       List<ChildItem> ch = [];
       ch.add(ChildItem(id: 1, name: 'Child 1', idParent: 1));
       ch.add(ChildItem(id: 2, name: 'Child 2', idParent: 1));
